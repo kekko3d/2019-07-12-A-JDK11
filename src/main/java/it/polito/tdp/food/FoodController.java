@@ -5,9 +5,15 @@
 package it.polito.tdp.food;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.food.model.Food;
 import it.polito.tdp.food.model.Model;
+import it.polito.tdp.food.model.foodAndCalories;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -41,7 +47,7 @@ public class FoodController {
     private Button btnSimula; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxFood"
-    private ComboBox<?> boxFood; // Value injected by FXMLLoader
+    private ComboBox<Food> boxFood; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
@@ -50,12 +56,34 @@ public class FoodController {
     void doCreaGrafo(ActionEvent event) {
     	txtResult.clear();
     	txtResult.appendText("Creazione grafo...");
+    	model.creaGrafo(Integer.parseInt(txtPorzioni.getText()));
+    	LinkedList <Food> temp = new LinkedList <Food> ();
+    	temp.addAll(model.getVertex());
+		Collections.sort(temp, new Comparator<Food>() {
+			@Override
+			public int compare(Food o1, Food o2) {
+				return (int) o2.getDisplay_name().compareTo(o1.getDisplay_name());
+			}
+		});
+    	boxFood.getItems().addAll(temp);
     }
     
     @FXML
     void doCalorie(ActionEvent event) {
     	txtResult.clear();
     	txtResult.appendText("Analisi calorie...");
+    	txtResult.clear();
+		List <foodAndCalories> temp = new LinkedList <foodAndCalories> ();
+		temp.addAll(model.getFoodWithMostCalories(boxFood.getValue()));
+		Collections.sort(temp, new Comparator<foodAndCalories>() {
+			@Override
+			public int compare(foodAndCalories o1, foodAndCalories o2) {
+				return (int) o2.getFood().getDisplay_name().compareTo(o1.getFood().getDisplay_name());
+			}
+		});
+    	for(foodAndCalories f : temp) {
+    		txtResult.appendText(f.toString() + '\n');
+    	}
     }
 
     @FXML
