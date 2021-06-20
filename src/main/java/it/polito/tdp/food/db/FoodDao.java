@@ -115,10 +115,8 @@ public class FoodDao {
 	
 	public List<Food> listVertici(Integer num){
 		String sql = "SELECT p1.`food_code`, f.`display_name`, COUNT(DISTINCT(p1.`portion_id`)) as peso "
-				+ "FROM portion p1, portion p2, food f "
-				+ "WHERE p1.`portion_id` > p2.`portion_id` "
-				+ "AND p1.`food_code` = p2.`food_code` "
-				+ "AND f.`food_code` = p1.`food_code` "
+				+ "FROM portion p1, food f "
+				+ "WHERE f.`food_code` = p1.`food_code` "
 				+ "GROUP BY p1.`food_code` "
 				+ "HAVING peso <= ? " ;
 		try {

@@ -125,21 +125,20 @@ public class Model {
 		Integer TEMP = 0;
 		LinkedList <Event> events = new LinkedList <Event> ();
 		List <Machine> machines = new LinkedList <Machine> ();
-		for(int i = 0; i< k; i++ ) {
-			machines.add(new Machine (i, false));
+		LinkedList <foodAndCalories> listaViciniOrdinata = new LinkedList<foodAndCalories> (getFoodWithMostCalories(f));
+
+		for(int i = 0; i < k; i++ ) {
+			foodAndCalories startFood = listaViciniOrdinata.poll();
+			machines.add(new Machine (i, false, startFood.getFood()));
 		}
-		simulation(TEMP, events, f, machines, k);
+		simulation(TEMP, events, machines, k);
 	}
 	
 	
-	private void simulation(Integer TEMP, LinkedList<Event> events, Food f, List<Machine> machines, int k) {
-		LinkedList <foodAndCalories> listaViciniOrdinata = new LinkedList<foodAndCalories> (getFoodWithMostCalories(f));
+	private void simulation(Integer TEMP, LinkedList<Event> events, List<Machine> machines, int k) {
 		LinkedList <Food> listAllFood =  new LinkedList <Food> (idMap.values());
 		//for machines sono finite aggiungi cibo
 		foodAndCalories ciboPerProva;
-		foodAndCalories cibo =listaViciniOrdinata.getFirst();
-
-		System.out.println(cibo);
 
 		while(TEMP < 2000) {
 
@@ -164,14 +163,15 @@ public class Model {
 					//partendo dalla lista del cibo fornito prendo a mano
 					//a mano tutti i cibi con le calorie più alte 
 					//finché non trovo quello che non ho ancora cucinato
-					for(int i = 0; i < getFoodWithMostCalories(cibo.getFood()).size(); i++) {
+					Food cibo = machines.get(c).getFood();
+					for(int i = 0; i < getFoodWithMostCalories(cibo).size(); i++) {
 
 						//se la lista contiene il cibo allora ho trovato il cibo che voglio cucinare
-						ciboPerProva = getFoodWithMostCalories(cibo.getFood()).get(i);
+						ciboPerProva = getFoodWithMostCalories(cibo).get(i);
 
 						if(listAllFood.contains(ciboPerProva.getFood())){
 							listAllFood.remove(ciboPerProva.getFood());
-							cibo = ciboPerProva;
+							cibo = ciboPerProva.getFood();
 							System.out.println("sbjsabjsbjs");
 							//prendo il cibo che mi  serve per scegliere 
 							//la prossima pietanza da cucinare
@@ -179,7 +179,8 @@ public class Model {
 							//rimuovo il cibo così sono sicuro di non ricucinarlo
 							Integer id = machines.get(c).getId();
 							machines.get(c).setBusy(true);
-							machines.get(c).setTime(machines.get(c).getTime() + (int) cibo.getCalories());
+							machines.get(c).setTime(machines.get(c).getTime() + (int) ciboPerProva.getCalories());
+							machines.get(c).setFood(cibo);
 							NPIETANZE++;
 							System.out.println(new Event(id, true, TEMP));
 							events.add(new Event(id, true, TEMP));
