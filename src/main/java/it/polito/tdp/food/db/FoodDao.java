@@ -18,7 +18,7 @@ public class FoodDao {
 				"FROM food, `portion` " + 
 				"WHERE food.food_code=portion.food_code " + 
 				"GROUP BY food.food_code " + 
-				"HAVING CNT=? " +
+				"HAVING CNT <= ? " +
 				"ORDER BY food.display_name ASC" ;
 		
 		List<Food> result = new ArrayList<>();

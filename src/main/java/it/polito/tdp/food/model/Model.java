@@ -40,8 +40,10 @@ public class Model {
 				}
 			}
 		}
-		System.out.println(this.graph) ;
-		
+		//System.out.println(this.graph) ;
+		System.out.println(graph.edgeSet().size());
+		System.out.println(graph.vertexSet().size());
+
 		return this.cibi ;
 	}
 	
